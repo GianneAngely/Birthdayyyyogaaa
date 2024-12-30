@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Yogaa</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 1s ease;
+        }
+        video {
+            width: 80%;
+            max-height: 80vh;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #balloonContainer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            overflow: hidden;
+        }
+        .balloon {
+            position: absolute;
+            width: 50px;
+            animation: float 5s linear infinite;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(-100px);
+            }
+        }
+        #birthdayMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #FF5733;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            display: none;
+        }
+        #spinWheelContainer {
+            margin-top: 30px;
+            text-align: center;
+            display: none; /* Initially hidden */
+        }
+        #spinWheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 10px solid #ccc;
+            position: relative;
+            background: conic-gradient(#FF5733 0% 14%, #FFC300 14% 28%, #4CAF50 28% 42%, #2196F3 42% 56%, #FF5733 56% 70%, #FFC300 70% 84%, #4CAF50 84% 98%, #2196F3 98% 100%);
+            cursor: pointer;
+        }
+        #spinWheel .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #popup p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #countdown {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoPlayer" controls></video>
+    <button id="playButton">Play Videos</button>
+    <div id="balloonContainer"></div>
+    <div id="birthdayMessage">Happy Birthdayy Yogaaa</div>
+
+    <!-- Spin Wheel Section -->
+    <div id="spinWheelContainer">
+        <h2>Your Gift</h2>
+        <div id="spinWheel">
+            <div class="spinner"></div>
+        </div>
+        <div id="countdown"></div>
+    </div>
+
+    <!-- Popup Message -->
+    <div id="popup">
+        <p id="giftMessage"></p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playButton = document.getElementById('playButton');
+        const videoFiles = ['bday1.mp4', 'bday2.mp4', 'bday3.mp4'];
+        const balloonContainer = document.getElementById('balloonContainer');
+        const birthdayMessage = document.getElementById('birthdayMessage');
+        const spinWheelContainer = document.getElementById('spinWheelContainer');
+        const spinWheel = document.getElementById('spinWheel');
+        const countdownElement = document.getElementById('countdown');
+        const popup = document.getElementById('popup');
+        const giftMessage = document.getElementById('giftMessage');
+        let currentVideoIndex = 0;
+        let spinsRemaining = 3;
+
+        const gifts = [
+            "Ciuman di pipi 100x",
+            "Pelukan selama 1 abad",
+            "Disayang-sayang Angel selamanya <3",
+            "Pap Angel banyak-banyak :3 (CRINGE BGT NGETIK INI)",
+            "Cipokan brutal :>",
+        ];
+
+        let videoBday4Played = false;
+
+        // Function to load and play the current video
+        function loadVideo(index) {
+            if (index < videoFiles.length) {
+                videoPlayer.src = videoFiles[index];
+                videoPlayer.play();
+            } else {
+                if (!videoBday4Played) {
+                    videoPlayer.src = 'bday4.mp4';
+                    videoPlayer.play();
+                    videoBday4Played = true;
+                }
+                showBalloons();
+                showBirthdayMessage();
+            }
+        }
+
+        // Event listener for when the video ends
+        videoPlayer.addEventListener('ended', () => {
+            currentVideoIndex++;
+            loadVideo(currentVideoIndex);
+        });
+
+        // Play videos when the button is clicked
+        playButton.addEventListener('click', () => {
+            currentVideoIndex = 0;
+            videoBday4Played = false;
+            loadVideo(currentVideoIndex);
+        });
+
+        // Show balloons animation
+        function showBalloons() {
+            videoPlayer.style.display = 'block';
+            playButton.style.display = 'none';
+            balloonContainer.style.display = 'block';
+
+            for (let i = 1; i <= 7; i++) {
+                const balloon = document.createElement('img');
+                balloon.src = `b${i}.png`;
+                balloon.classList.add('balloon');
+                balloon.style.left = `${Math.random() * 100}vw`;
+                balloon.style.animationDuration = `${4 + Math.random() * 3}s`;
+                balloonContainer.appendChild(balloon);
+            }
+        }
+
+        // Show birthday message
+        function showBirthdayMessage() {
+            birthdayMessage.style.display = 'block';
+            setTimeout(() => {
+                document.body.style.backgroundColor = 'white'; // Change the background to white
+                spinWheelContainer.style.display = 'block';
+                startCountdown();
+            }, 3000); // Delay before showing the spin wheel and countdown
+        }
+
+        // Countdown for remaining spins
+        function startCountdown() {
+            countdownElement.textContent = `Sisa Putaran: ${spinsRemaining}`;
+            const countdownInterval = setInterval(() => {
+                countdownElement.textContent = `Sisa Putaran: ${spinsRemaining}`;
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(countdownInterval);
+            }, 3000); // 3 seconds countdown
+        }
+
+        // Spin Wheel logic
+        spinWheel.addEventListener('click', () => {
+            if (spinsRemaining > 0) {
+                const randomDeg = Math.floor(Math.random() * 360) + 720; // Random rotation
+                spinWheel.style.transition = 'transform 4s ease-out';
+                spinWheel.style.transform = `rotate(${randomDeg}deg)`;
+
+                setTimeout(() => {
+                    const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+                    showPopup(randomGift);
+                    spinsRemaining--;
+                    if (spinsRemaining === 0) {
+                        countdownElement.textContent = 'Putaran Habis!';
+                        endCelebration(); // End the celebration after 3 spins
+                    }
+                }, 4000);
+            }
+        });
+
+        // Show Popup with the gift
+        function showPopup(gift) {
+            giftMessage.textContent = `Selamat! Kamu mendapatkan: ${gift}`;
+            popup.style.display = 'block';
+        }
+
+        // Close the popup
+        function closePopup() {
+            popup.style.display = 'none';
+        }
+
+        // End celebration (after 3 spins)
+        function endCelebration() {
+            document.body.style.backgroundColor = 'white';
+            spinWheelContainer.style.display = 'none';
+            countdownElement.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
